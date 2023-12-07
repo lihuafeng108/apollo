@@ -1,0 +1,23 @@
+1、不安装NVIDIA GPU驱动，虚拟机不需要；
+2、安装docker
+curl https://get.docker.com | sh
+sudo systemctl start docker && sudo systemctl enable docker
+3、配置开机启动docker
+sudo systemctl enable docker.service
+sudo systemctl enable containerd.service
+4、下载并编译apollo源码
+git clone https://github.com/ApolloAuto/apollo.git 
+5、下载apollo docker所需镜像文件(第一次进入docker，或者image镜像有更新时，下载过程时间会比较长)
+cd apollo
+bash docker/scripts/dev_start.sh
+bash docker/scripts/dev_into.sh    (以后每次通过这个命令进入apollo容器环境)
+6、在apollo容器环境下，编译cyber
+./apollo.sh build_cpu cyber    （编译过程会下载需要的部件，需要网络可访问）
+7、配置cyber demo运行日志输出到终端，方便调试
+cd cyber
+vi setup.bash
+GLOG_alsologtostderr修改等于1
+source setup.bash （每次进入都要设置一次）
+8、运行cyber编译出来的demo
+cd apollo/bazel-bin/cyber/examples    (生成的文件在bazel-bin内)
+日志会在终端打印，同时/apollo/data/log/下也会生成一份日志
